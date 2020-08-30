@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 const config = require('./parameters')
 
-
+//map global promise - get rid of warning
+mongoose.promise=global.promise;
 module.exports = ()=>{
     let url =''
     if(process.env.NODE_ENV === 'production'){

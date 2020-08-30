@@ -1,13 +1,16 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const passport = require('passport')
-var movieRouter = require('./src/routes/movie');
-var usersRouter = require('./src/routes/users');
-var app = express();
+const movieRouter = require('./src/routes/movie');
+const usersRouter = require('./src/routes/users');
+const app = express();
+const cors = require('cors')
 
+// app.use(passport.initialize());
+// require("./src/config/passport")(passport)
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -17,11 +20,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize())
-require("./src/config/passport")(passport)
+app.use(cors());
 
+app.use(passport.initialize());
+require("./src/config/passport")(passport)
 app.use('/', movieRouter);
 app.use('/user', usersRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -32,12 +37,12 @@ res.status(404).json('invaid request')
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  // res.locals.message = err.message;
-  // res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // // render the error page
-  // res.status(err.status || 500);
-  // res.render('error');
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 res.status(404).json(err.message)
 
 });

@@ -7,32 +7,22 @@ const key = config.jwtSecret;
 const security = {}
 security.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 security.secretOrKey=key
-module.exports = passport => {
-  passport.use(
-        new JwtStrategy(security,(jwt_payload,done) => {
-            // 
-            if(jwt_payload.userType==='user'){
-                User.findById(jwt_payload._id)
-                .then(user=> {
-                    if (user)
-                    return done(null,user)
-            return done(null,false)
-                })
-                .catch(err=>{
-                    console.log(err)
-                })
-            }
-            if(jwt_payload.userType==='admin'){
-                Admin.findById(jwt_payload._id)
-                .then(user=> {
-                    if (user)
-                    return done(null,user)
-            return done(null,false)
-                })
-                .catch(err=>{
-                    console.log(err)
-                })
-            }
-        })
-    )
-} 
+// console.log('jwt_payload',security)
+
+    module.exports = passport=>{
+        passport.use(
+            new JwtStrategy(security,(jwt_payload,done)=>{
+                console.log(jwt_payload)
+       User.findById(jwt_payload._id)
+       .then((user)=>{
+           if(user)
+              return done(null,user)
+           return done(null,false);
+       })
+       .catch(err=>{
+           console.log(err)
+       })
+            })
+        )
+    }
+

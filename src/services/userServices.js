@@ -63,10 +63,11 @@ class UserServices {
         const isCorrect = await bcrypt.compare(data.password, userExist.password);
         if (!isCorrect) return new CustomError("Incorrect password");
         //sign in an accessToken
-        const accessToken = jwt.sign({ id: userExist._id,name:userExist.userName }, 
+        const accessToken = jwt.sign({ _id: userExist._id,name:userExist.userName }, 
         process.env.jwtSecret, { expiresIn:config.accessTokenexpires_expiresIn, });
         //sign in an refreshToken
-        const refreshToken = jwt.sign({ id: userExist._id,name:userExist.userName },
+        console.log(config.accessTokenexpires_expiresIn)
+        const refreshToken = jwt.sign({ _id: userExist._id,name:userExist.userName },
         process.env.jwtSecret, { expiresIn:config.refreshToken_expiresIn, });
         let user = _.pick(userExist,['email','_id','userName'])
         // return back accestoken and refreshtoken with the user details after successful login

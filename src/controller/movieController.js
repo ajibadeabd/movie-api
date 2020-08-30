@@ -10,7 +10,15 @@ class movieContoller {
     let {data,status,message} = await movieSevr.addMovie(req,res,req.body)
     res.status(status).json({data,message,status});
   }
-
+  async editMovie(req, res) {
+    let {data,status,message} = await movieSevr.editMovie(req,res,req.body)
+    res.status(status).json({data,message,status});
+  }
+  async deleteMovie(req, res) {
+    let {data,status,message} = await movieSevr.deleteMovie(req,res,req.body)
+    res.status(status).json({data,message,status});
+  }
+  
 
 }
 module.exports = new movieContoller();
