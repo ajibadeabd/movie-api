@@ -5,7 +5,7 @@ const config = require('./parameters')
 // const key = config.jwtSecret;
 const security = {}
 security.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-security.secretOrKey=config.jwtSecret
+security.secretOrKey=config.jwtSecret || 'dhge98dyi4hfbeohcd89yc9cjsb'
 module.exports = passport=>{
     passport.use(
         new JwtStrategy(security,(jwt_payload,done)=>{
