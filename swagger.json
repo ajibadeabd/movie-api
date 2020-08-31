@@ -1,0 +1,281 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "movie-api",
+        "description": "a movie api for rating each movie",
+        "license": {
+            "name": "MIT"
+        }
+    },
+    "basePath": "",
+    "tags": [
+        {
+            "name": "movie-api",
+            "description": "a movie api for rating each movie"
+        }
+    ],
+    "schemes": [
+       
+        "http",
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "components":{
+        "securitySchema":{
+            "bearereAuth":{
+                "type":"http",
+                "scheme":"bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "security":{
+            "bearerAuth":[]
+        }
+    },
+    "paths": {
+        "/Api/v1/user/signUp": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Users can create an account",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "To create an account",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "you are now logged in",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    },
+                    "400": {
+                        "description": "password incorrect"
+                    },
+                    "400": {
+                        "description": "Username already taken"                        
+                    }
+                
+                    
+                }
+            }
+        },
+        "/Api/v1/user/signIn": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                
+                "summary": "Users can  login to access their created account, set token to header authorization to get access to other route",
+               "parameters": [
+                {
+                    "in": "body",
+                    "name": "body",
+                    "description": "To create an account, an access token is also created which last for 10 minute, a refresh token will also be created as well which will last for 2 week to fetch a new access token",
+                    "schema": {
+                        "$ref": "#/definitions/user"
+                    }
+                }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "you are now logged in",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    },
+                    "404": {
+                        "description": "no email found"
+                    },
+                    "400": {
+                        "description": "incorrect password"                        
+                    }
+                    
+                },
+                "header":{
+                    "X-Rate-Limit":{
+                        "type": "string",
+                        "description": "calls per 10 m"
+                    },
+                    "X-Expires-After":{
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "date in UTC when token expires"
+                    }
+                    
+                    
+                }
+            }
+        },
+        "/Api/v1/all_movie": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                
+                "summary": "get list of movies by all user",
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                    
+                    
+                }
+            }
+        },
+        "/Api/v1/add_movie": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "security":{
+                    "bearerAuth":[]
+                },
+                
+                "responses": {
+                    "200": {
+                        "description": "okay"
+                       
+                    },
+                    "401": {
+                        "description": "unathourize"
+                       
+                    }
+                   
+                    
+                }
+            }
+        },
+        "/Api/v1/all_movie/{movieId}": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "security":{
+                    "bearerAuth":[]
+                },
+                "parameters": [
+
+                    {
+                        "description": "ID of movie rating to be edited",
+                        "type": "string",
+                        "name": "movieId",
+                        "in": "path",
+                        "required": true
+                        
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "request approved"
+                        
+                    },
+                    "400": {
+                        "description": "bad"
+                    },
+                    "401": {
+                        "description": "unauthorize"
+                    }
+                                            
+
+                   
+                    
+                }
+            }
+        },
+          "/Api/v1/all_movie/{eachMovieId}": {
+            "delete": {
+                "tags": [
+                    "user"
+                ],
+                "security":{
+                    "bearerAuth":[]
+                },
+                "parameters": [
+
+                    {   "type": "string",
+                        "name": "eachMovieId",
+                        "description": "ID of movie to delete",
+                        "in": "path",
+                        "required": true
+                       
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description":"ok"
+                    },
+                   
+                    "400": {
+                        "description": "bad request"                        
+                    },
+                    "401": {
+                        "description": "unauthorize"                        
+                    }
+                    
+                }
+            }
+        }
+    },
+    "definitions": {
+        "user": {
+            "type": "object",
+            "properties": {
+                "userName": {
+                    "type":"string",
+                    "required":true,
+                    " unique": true
+                },
+                "email": {
+                    "type":"string",
+                     "required":true,
+                     "unique": true
+                },
+                "password": {
+                    "type":"string",
+                    "required":true
+                },
+                "confirm_passwormd": {
+                    "type":"string",
+                    "require":true
+                    
+                }
+            }
+        }
+        ,
+            "request": {
+                "type": "object",
+                "properties": {
+                    "user_id":{
+                        "type":"string",
+                        "required":true
+                    },
+                    "message":{
+                        "type":"string",
+                        "required":true
+                        },
+                        "status":{
+                            "type":"string",
+                            "required":true
+                            }
+                }
+            }
+    }
+}

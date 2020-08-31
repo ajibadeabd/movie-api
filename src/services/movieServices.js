@@ -42,56 +42,92 @@ class movieServices {
 
         return   {status:200,data:allMovie,message:"all movie fetch"}
     }
-    
+
+
+
+
+    //add movie to list
     async addMovie(req, res,data) {
       // pick rating and the title
        data = _.pick(data,['title','rating'])
+       
        //check if rating is between 1 to 5
        if(data.rating>5 || data.rating<0 ){return new CustomError("please rating should be in the range  of 1-5");}
-       //checkmif rating is provided
+
+       //checkif rating is provided
        if(!data.title){return new CustomError("please provide a title ratings");}
+
        //check if rating exist in the data base
-       let ifAdded = await Movie.findOne({title:data.title})
+       let ifAdded = await Movie.findOne({title:data.title,user:req.user.id})
        if(ifAdded){return new CustomError(`${data.title} has been added earlier on `);}
+
        //check if rating is a number
        if(isNaN(data.rating) || !data.rating){return new CustomError("please provide a valid rating");}
+       data.user=req.user._id
        //save movie in database
-       let saveMovie = await new Movie({title:data.title,rating:data.rating}).save()
+       let saveMovie = await new Movie(data).save()
+       
        //return response
       return   {status:200,data:saveMovie,message:`${data.title} has been added to your list`}
 
     }
+
+
+
+    // edit rating of each movie
     async editMovie(req, res,data) {
+      const id =req.params.movieId
+      // check if user own the posted movie
+     let isYours = await Movie.findOne({_id:id,user:req.user._id})
+
+     if(!isYours){return new CustomError("you cant edit what you didnt save",404);}
       // pick rating and the title
        data = _.pick(data,['rating'])
-      const id =req.params.movieId
+
       //check if movie id is valid
        let isValid= mongoose.Types.ObjectId.isValid(id)
     if(!isValid){return new CustomError("invalid movie id,please provide a valid movie id");}
+     
        //check if rating is a number
       if(isNaN(data.rating) || !data.rating){return new CustomError("please provide a valid rating");}
+
+       //check if rating is between 1 to 5
+       if(data.rating>5 || data.rating<0 ){return new CustomError("please rating should be in the range  of 1-5");}
+
       //check if movie exist
     let movieId = await Movie.findById(id);
     if(!movieId){return new CustomError("movie does not exist");}
+
     //set movie rating to a new rating
     movieId.rating=data.rating
     //save the new rating
     let saveMovie = await  movieId.save();
+
        //return response
-    return   {status:200,data:saveMovie,message:`${data.rating} has been updated`}
+    return   {status:200,data:saveMovie,message:`${movieId.title} has been updated`}
     }
 
+
+
+
+
     async deleteMovie(req, res,data) {
-      const id =req.params.movieId
+      const id =req.params.eachMovieId
+      
+      // check if user own the posted movie
+     let isYours = await Movie.findOne({_id:id,user:req.user._id})
+    if(!isYours){return new CustomError("you cant delete what you didnt save",404);}
+
       //check if movie id is valid
        let isValid= mongoose.Types.ObjectId.isValid(id)
     if(!isValid){return new CustomError("invalid movie id,please provide a valid movie id");}
+
       //check if movie exist
     let deleteMovie = await Movie.findByIdAndDelete(id);
-    if(!deleteMovie){return new CustomError("you cant delet a movie that does not exist");}
+    if(!deleteMovie){return new CustomError("you cant delete a movie that does not exist");}
     
        //return response
-    return   {status:200,data:null,message:`${data.rating} has been updated`}
+    return   {status:200,data:null,message:`${deleteMovie.title} has been deleted`}
     }
   
   

@@ -8,6 +8,8 @@ const movieRouter = require('./src/routes/movie');
 const usersRouter = require('./src/routes/users');
 const app = express();
 const cors = require('cors')
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
 // app.use(passport.initialize());
 // require("./src/config/passport")(passport)
@@ -22,16 +24,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.get('/',(req,res,next)=>{     res.redirect('/api-docs')  })
+
 app.use(passport.initialize());
 require("./src/config/passport")(passport)
-app.use('/', movieRouter);
-app.use('/user', usersRouter);
+app.use('/Api/v1', movieRouter);
+app.use('/Api/v1/user', usersRouter);
 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   // next(createError(404));
-res.status(404).json('invaid request')
+res.status(404).json({message:'invaid request',status:404})
 });
 
 // error handler

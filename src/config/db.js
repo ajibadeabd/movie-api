@@ -6,7 +6,7 @@ mongoose.promise=global.promise;
 module.exports = ()=>{
     let url =''
     if(process.env.NODE_ENV === 'production'){
-        url=config.localDatabaseURI
+        url=config.atlasDatabaseURI
     }else{
         url=config.localDatabaseURI
     }
