@@ -252,30 +252,13 @@
                     "type":"string",
                     "required":true
                 },
-                "confirm_passwormd": {
+                "confirm_password": {
                     "type":"string",
                     "require":true
                     
                 }
             }
         }
-        ,
-            "request": {
-                "type": "object",
-                "properties": {
-                    "user_id":{
-                        "type":"string",
-                        "required":true
-                    },
-                    "message":{
-                        "type":"string",
-                        "required":true
-                        },
-                        "status":{
-                            "type":"string",
-                            "required":true
-                            }
-                }
-            }
+    
     }
 }

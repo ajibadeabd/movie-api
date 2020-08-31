@@ -4,12 +4,8 @@ const config = require('./parameters')
 //map global promise - get rid of warning
 mongoose.promise=global.promise;
 module.exports = ()=>{
-    let url =''
-    if(process.env.NODE_ENV === 'production'){
-        url=config.atlasDatabaseURI
-    }else{
-        url=config.localDatabaseURI
-    }
+    let url =config.atlasDatabaseURI
+    
     mongoose.connect(url, { useNewUrlParser: true , useUnifiedTopology: true})
     .then(() => {
         console.log("dataBase connection has been established")
