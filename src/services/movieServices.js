@@ -16,6 +16,8 @@ const movie = require('../models/movie');
 
 class movieServices {
     async getAllMovies(req, res) {
+   try{
+
     let url1= ` https://api.themoviedb.org/3/discover/movie/?api_key=${config.mvdb_api_key}&with_genres=10749&append_to_response=videos`;
     let url2= ` https://api.themoviedb.org/3/discover/movie/?api_key=${config.mvdb_api_key}&with_genres=27&append_to_response=videos`;
     let url3=  `https://api.themoviedb.org/3/discover/movie/?api_key=${config.mvdb_api_key}&with_genres=28&append_to_response=videos`;
@@ -23,14 +25,14 @@ class movieServices {
     let url5=   `https://api.themoviedb.org/3/discover/movie/?api_key=${config.mvdb_api_key}&with_genres=10749&append_to_response=videos`;
     let url6=   `https://api.themoviedb.org/3/discover/movie/?api_key=${config.mvdb_api_key}&with_genres=with_genres=878&append_to_response=videos`;
     let url7=   `https://api.themoviedb.org/3/discover/movie/?api_key=${config.mvdb_api_key}&with_genres=16&append_to_response=videos`;
-
-      let list1 = await axios.get(url1)
+     let list1 = await axios.get(url1)
       let list2 = await axios.get(url2)
       let list3 = await axios.get(url3)
       let list4 = await axios.get(url4)
       let list5 = await axios.get(url5)
       let list6 = await axios.get(url6)
       let list7 = await axios.get(url7)
+      
      const allMovie=[...list1.data.results,
       ...list2.data.results,
       ...list3.data.results,
@@ -41,6 +43,10 @@ class movieServices {
     ]
 
         return   {status:200,data:allMovie,message:"all movie fetch"}
+   }catch(error){
+    return new CustomError(error.message)
+   }
+      
     }
 
 
